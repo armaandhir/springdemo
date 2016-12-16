@@ -15,5 +15,5 @@ public interface UserAccountService {
 	
 	UserAccount update (UserAccount account);
 	
-	void delete (UserAccount account);
+	void delete (BigInteger id);
 }

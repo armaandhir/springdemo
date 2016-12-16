@@ -2,9 +2,8 @@ package com.armaandhir.demo.api;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.armaandhir.demo.model.UserAccount;
+import com.armaandhir.demo.service.UserAccountService;
 
 /**
  * @author	armaandhir
@@ -24,69 +24,12 @@ import com.armaandhir.demo.model.UserAccount;
 @RestController
 public class SpringDemoController {
 	
-	private static BigInteger nextId;
-	private static Map<BigInteger, UserAccount> userAccountsMap;
-	
 	/**
-	 * This block temporarily fills the collection with temporary accounts
+	 * Always use Interface type for dependency injection rather than Implementation class.
+	 * This follows programming by contract-model so that only public methods are exposed to service client.
 	 */
-	static {
-		nextId = BigInteger.ZERO; 
-		userAccountsMap = new HashMap<BigInteger, UserAccount>();
-		
-		UserAccount ua0 = new UserAccount();
-		ua0.setEmail("dhir.armaan@gmail.com");
-		ua0.setPassword("12345a");
-		createAccount(ua0);
-		
-		UserAccount ua1 = new UserAccount();
-		ua1.setEmail("dhir.kashish@gmail.com");
-		ua1.setPassword("12345k");
-		createAccount(ua1);
-	}
-	
-	
-	/**
-	 * @param 	account			 	
-	 * @return	account		created account is returned
-	 */
-	private static UserAccount createAccount(UserAccount account) {
-		account.setId(nextId);
-		nextId = nextId.add(BigInteger.ONE);
-		userAccountsMap.put(account.getId(), account);
-		return account;
-	}
-	
-	/**
-	 * @param 	account
-	 * @return	
-	 */
-	private static UserAccount update(UserAccount account) {
-		if (account != null) {
-			userAccountsMap.remove(account.getId());
-			userAccountsMap.put(account.getId(), account);
-		}
-		else {
-			return null;
-		}
-		return account;
-	}
-	
-	/**
-	 * @param id
-	 * @return
-	 */
-	private static boolean delete(BigInteger id) {
-		UserAccount deletedAccount = userAccountsMap.remove(id);
-		if (deletedAccount == null) {
-			return false;
-		}
-		return true;
-	}
-	
-	
-	/* ---Controller methods from here--- */
-	
+	@Autowired
+	private UserAccountService userAccountService;
 	
 	/**
 	 * @return
@@ -96,7 +39,7 @@ public class SpringDemoController {
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<UserAccount>> getAllAccounts() {
-		return new ResponseEntity<Collection<UserAccount>>(userAccountsMap.values(), HttpStatus.OK);
+		return new ResponseEntity<Collection<UserAccount>>(userAccountService.findAll(), HttpStatus.OK);
 	}
 	
 	/**
@@ -109,8 +52,8 @@ public class SpringDemoController {
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> getAccount(@PathVariable("id") BigInteger id) {
-		UserAccount account = userAccountsMap.get(id);
-		if (userAccountsMap.get(id) == null) {
+		UserAccount account = userAccountService.findOne(id);
+		if (account == null) {
 			return new ResponseEntity<UserAccount>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<UserAccount>(account, HttpStatus.OK);
@@ -128,7 +71,7 @@ public class SpringDemoController {
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> addAccount(@RequestBody UserAccount account) {
-		UserAccount createdAccount = createAccount(account);
+		UserAccount createdAccount = userAccountService.create(account);
 		return new ResponseEntity<UserAccount>(createdAccount, HttpStatus.OK);
 	}
 	
@@ -142,7 +85,7 @@ public class SpringDemoController {
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> updateAccount(@RequestBody UserAccount account) {
-		UserAccount updatedAccount = update(account);
+		UserAccount updatedAccount = userAccountService.update(account);
 		if(updatedAccount == null) {
 			return new ResponseEntity<UserAccount>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -161,10 +104,7 @@ public class SpringDemoController {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> deleteAccount(
 			@PathVariable("id") BigInteger id, @RequestBody UserAccount account) {
-		boolean deleted = delete(id);
-		if(!deleted) {
-			return new ResponseEntity<UserAccount>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		userAccountService.delete(id);
 		return new ResponseEntity<UserAccount>(HttpStatus.NO_CONTENT);
 	}
 	
