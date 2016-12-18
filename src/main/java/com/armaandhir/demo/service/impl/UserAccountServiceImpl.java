@@ -1,6 +1,5 @@
 package com.armaandhir.demo.service.impl;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +12,15 @@ import com.armaandhir.demo.service.UserAccountService;
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
-	private static BigInteger nextId;
-	private static Map<BigInteger, UserAccount> userAccountsMap;
+	private static Long nextId;
+	private static Map<Long, UserAccount> userAccountsMap;
 	
 	/**
 	 * This block temporarily fills the collection with temporary accounts
 	 */
 	static {
-		nextId = BigInteger.ZERO; 
-		userAccountsMap = new HashMap<BigInteger, UserAccount>();
+		nextId = new Long(0); 
+		userAccountsMap = new HashMap<Long, UserAccount>();
 		
 		UserAccount ua0 = new UserAccount();
 		ua0.setEmail("dhir.armaan@gmail.com");
@@ -41,7 +40,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	 */
 	private static UserAccount createAccount(UserAccount account) {
 		account.setId(nextId);
-		nextId = nextId.add(BigInteger.ONE);
+		nextId += 1;
 		userAccountsMap.put(account.getId(), account);
 		return account;
 	}
@@ -65,7 +64,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	 * @param id
 	 * @return
 	 */
-	private static boolean deleteAccount(BigInteger id) {
+	private static boolean deleteAccount(Long id) {
 		UserAccount deletedAccount = userAccountsMap.remove(id);
 		if (deletedAccount == null) {
 			return false;
@@ -79,7 +78,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	@Override
-	public UserAccount findOne(BigInteger id) {
+	public UserAccount findOne(Long id) {
 		UserAccount account = userAccountsMap.get(id);
 		return account;
 	}
@@ -97,7 +96,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	@Override
-	public void delete(BigInteger id) {
+	public void delete(Long id) {
 		deleteAccount(id);
 	}
 

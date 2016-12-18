@@ -1,10 +1,8 @@
 package com.armaandhir.demo.model;
 
-import java.math.BigInteger;
-
 public class UserAccount {
 	
-	private BigInteger id;
+	private Long id;
 	private String email;
 	private String password;
 	
@@ -12,11 +10,11 @@ public class UserAccount {
 		
 	}
 
-	public BigInteger getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
