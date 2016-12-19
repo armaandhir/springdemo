@@ -1,7 +1,5 @@
 package com.armaandhir.demo.model;
 
-import java.math.BigInteger;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,7 +9,7 @@ public class UserAccount {
 	
 	@Id
 	@GeneratedValue
-	private BigInteger id;
+	private Long id;
 	
 	private String email;
 	
@@ -21,11 +19,11 @@ public class UserAccount {
 		
 	}
 
-	public BigInteger getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

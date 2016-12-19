@@ -1,6 +1,5 @@
 package com.armaandhir.demo.api;
 
-import java.math.BigInteger;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class SpringDemoController {
 			value="/springdemo/api/account/{id}",
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserAccount> getAccount(@PathVariable("id") BigInteger id) {
+	public ResponseEntity<UserAccount> getAccount(@PathVariable("id") Long id) {
 		UserAccount account = userAccountService.findOne(id);
 		if (account == null) {
 			return new ResponseEntity<UserAccount>(HttpStatus.NOT_FOUND);
@@ -103,7 +102,7 @@ public class SpringDemoController {
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> deleteAccount(
-			@PathVariable("id") BigInteger id, @RequestBody UserAccount account) {
+			@PathVariable("id") Long id, @RequestBody UserAccount account) {
 		userAccountService.delete(id);
 		return new ResponseEntity<UserAccount>(HttpStatus.NO_CONTENT);
 	}

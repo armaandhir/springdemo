@@ -1,104 +1,65 @@
 package com.armaandhir.demo.service.impl;
 
-import java.math.BigInteger;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.armaandhir.demo.model.UserAccount;
+import com.armaandhir.demo.repository.UserAccountRepository;
 import com.armaandhir.demo.service.UserAccountService;
 
+/**
+ * @author Armaan Dhir
+ * 
+ * Implementation of the methods defined the in the UserAccountService interface.
+ * Uses UserAccountRepository to perform CRUD operations for UserAccount'
+ */
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
-	private static BigInteger nextId;
-	private static Map<BigInteger, UserAccount> userAccountsMap;
-	
 	/**
-	 * This block temporarily fills the collection with temporary accounts
+	 * Using the UserAccountRepository which will be used to perform CRUD operations.
 	 */
-	static {
-		nextId = BigInteger.ZERO; 
-		userAccountsMap = new HashMap<BigInteger, UserAccount>();
-		
-		UserAccount ua0 = new UserAccount();
-		ua0.setEmail("dhir.armaan@gmail.com");
-		ua0.setPassword("12345a");
-		createAccount(ua0);
-		
-		UserAccount ua1 = new UserAccount();
-		ua1.setEmail("dhir.kashish@gmail.com");
-		ua1.setPassword("12345k");
-		createAccount(ua1);
-	}
+	@Autowired
+	private UserAccountRepository userAccountRepository;
 	
-	
-	/**
-	 * @param 	account			 	
-	 * @return	account		created account is returned
-	 */
-	private static UserAccount createAccount(UserAccount account) {
-		account.setId(nextId);
-		nextId = nextId.add(BigInteger.ONE);
-		userAccountsMap.put(account.getId(), account);
-		return account;
-	}
-	
-	/**
-	 * @param 	account
-	 * @return	
-	 */
-	private static UserAccount updateAccount(UserAccount account) {
-		if (account != null) {
-			userAccountsMap.remove(account.getId());
-			userAccountsMap.put(account.getId(), account);
-		}
-		else {
-			return null;
-		}
-		return account;
-	}
-	
-	/**
-	 * @param id
-	 * @return
-	 */
-	private static boolean deleteAccount(BigInteger id) {
-		UserAccount deletedAccount = userAccountsMap.remove(id);
-		if (deletedAccount == null) {
-			return false;
-		}
-		return true;
-	}
 	
 	@Override
 	public Collection<UserAccount> findAll() {
-		return userAccountsMap.values();
+		return (Collection<UserAccount>) userAccountRepository.findAll();
 	}
 
 	@Override
-	public UserAccount findOne(BigInteger id) {
-		UserAccount account = userAccountsMap.get(id);
+	public UserAccount findOne(Long id) {
+		UserAccount account = userAccountRepository.findOne(id);
 		return account;
 	}
 
 	@Override
 	public UserAccount create(UserAccount account) {
-		UserAccount createdAccount = createAccount(account);
+		if(account.getId() == null) {
+			//cannot create account with specified id value
+			return null;
+		}
+		UserAccount createdAccount = userAccountRepository.save(account);
 		return createdAccount;
 	}
 
 	@Override
 	public UserAccount update(UserAccount account) {
-		UserAccount updatedAccount = updateAccount(account);
+		UserAccount persistedAccount = userAccountRepository.findOne(account.getId());
+		if (persistedAccount == null) {
+			// cannot update the account that has not been created
+			return null;
+		}
+		UserAccount updatedAccount = userAccountRepository.save(account);
 		return updatedAccount;
 	}
 
 	@Override
-	public void delete(BigInteger id) {
-		deleteAccount(id);
+	public void delete(Long id) {
+		userAccountRepository.delete(id);
 	}
 
 }
