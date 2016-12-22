@@ -103,7 +103,12 @@ public class SpringDemoController {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> deleteAccount(
 			@PathVariable("id") Long id, @RequestBody UserAccount account) {
-		userAccountService.delete(id);
+		try {
+			userAccountService.delete(account);
+		}
+		catch(Exception ex) {
+			System.out.println("Error deleting record");
+		}
 		return new ResponseEntity<UserAccount>(HttpStatus.NO_CONTENT);
 	}
 	
