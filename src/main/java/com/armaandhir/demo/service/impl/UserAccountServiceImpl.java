@@ -59,7 +59,10 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 	@Override
 	public void delete(Long id) {
-		userAccountRepository.delete(id);
+		UserAccount acc = userAccountRepository.findOne(id);
+		//userAccountRepository.delete(id);
+		userAccountRepository.delete(acc);
+		
 	}
 
 }
