@@ -38,7 +38,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 	@Override
 	public UserAccount create(UserAccount account) {
-		if(account.getId() == null) {
+		if(account.getId() != null) {
 			//cannot create account with specified id value
 			return null;
 		}
