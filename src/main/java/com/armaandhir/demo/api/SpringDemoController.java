@@ -97,14 +97,14 @@ public class SpringDemoController {
 	 * @return
 	 */
 	@RequestMapping(
-			value="/springdemo/api/delete{id}",
+			value="/springdemo/api/delete/{id}",
 			method=RequestMethod.DELETE,
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserAccount> deleteAccount(
 			@PathVariable("id") Long id, @RequestBody UserAccount account) {
 		try {
-			userAccountService.delete(account);
+			userAccountService.delete(id);
 		}
 		catch(Exception ex) {
 			System.out.println("Error deleting record");

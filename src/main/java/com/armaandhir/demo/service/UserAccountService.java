@@ -36,5 +36,5 @@ public interface UserAccountService {
 	/**
 	 * @param id
 	 */
-	void delete (UserAccount account);
+	void delete (Long id);
 }

@@ -84,8 +84,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Transactional(
 			propagation = Propagation.REQUIRES_NEW,
 			readOnly = false)
-	public void delete(UserAccount account) {
-		userAccountRepository.delete(account);
+	public void delete(Long id) {
+		UserAccount acc = userAccountRepository.findOne(id);
+		userAccountRepository.delete(acc);
 	}
 
 }
